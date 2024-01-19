@@ -3,7 +3,7 @@
  * Plugin Name: Paid Memberships Pro - Add Membership New Member
  * Plugin URI: #
  * Description: PMPRO add membership in add new user in backend.
- * Version: 1.0
+ * Version: 1.1
  * Author URI: #
  * Text Domain: pmpronewmm
  */
@@ -13,7 +13,7 @@ defined( "ABSPATH" ) || exit;
 
 define( "PMPRONEWMM_DIR", plugin_dir_path( __FILE__ ) );
 define( "PMPRONEWMM_URL", plugin_dir_url( __FILE__ ) );
-define( "PMPRONEWMM_VER", "1.0");
+define( "PMPRONEWMM_VER", "1.1");
 
 
 
@@ -124,6 +124,11 @@ class PMPRONEWMM {
 		
 		$current_level = ! empty( $_POST['membership_levels'] ) ? intval( $_POST['membership_levels'] ) : '';
 	?>
+	<style type="text/css">
+		tr.new_levels_tr span.spinner.is-active {
+		    float: none;
+		}		
+	</style>
 	<h3><?php _e("Membership Levels", 'pilor_training'); ?></h3>
 		<table class="wp-list-table widefat fixed pmprommpu_levels" width="100%" cellpadding="0" cellspacing="0" border="0">
 		<thead>
@@ -152,6 +157,7 @@ class PMPRONEWMM {
 							<option value="<?php echo $group->id;?>"><?php echo $group->name;?></option>
 						<?php } ?>
 					</select>
+					<span class="spinner"></span>
 				</td>
 				<td class="td_groups_level">
 					<em><?php _e('Choose a group first.', 'pmpro-multiple-memberships-per-user');?></em>
@@ -219,6 +225,9 @@ class PMPRONEWMM {
 				$('.pmprommpu_levels').on('change', '.new_levels_group', function(e){
 					e.preventDefault();
 					var $this = $(this);
+					$this.siblings('.spinner').addClass('is-active');
+
+
 					$this.parents('.new_levels_tr').find('.td_groups_level').html('');
 
 					let gruopId = $(this).val();
@@ -246,10 +255,15 @@ class PMPRONEWMM {
 									} else {
 										leveltd.html('<em>Choose a group first.</em>');
 									}
-
-					        	}
+					        	} else {
+									leveltd.html('<em>Choose a group first.</em>');
+								}
+								$this.siblings('.spinner').removeClass('is-active');
 							}
 					    });	
+					} else {
+						$this.parents('.new_levels_tr').find('.td_groups_level').html('<em>Choose a group first.</em>');
+						$this.siblings('.spinner').removeClass('is-active');
 					}
 				})
 			});
